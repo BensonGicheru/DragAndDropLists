@@ -720,7 +720,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
       var bottomRightOffset = localToGlobal(rb, size.bottomRight(Offset.zero));
 
       if (widget.axis == Axis.vertical) {
-        newOffset = _scrollListVertical(topLeftOffset, bottomRightOffset);
+        newOffset = _scrollListVertical(topLeftOffset, bottomRightOffset, size.height);
       } else {
         var directionality = Directionality.of(context);
         if (directionality == TextDirection.ltr) {
@@ -742,7 +742,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     }
   }
 
-  double? _scrollListVertical(Offset topLeftOffset, Offset bottomRightOffset) {
+  double? _scrollListVertical(Offset topLeftOffset, Offset bottomRightOffset, double height) {
     double top = topLeftOffset.dy;
     double bottom = bottomRightOffset.dy;
     double? newOffset;
@@ -751,16 +751,16 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     var pointerEventDeltaY = _pointerEventDeltaY;
     var scrollController = _scrollController;
     if (scrollController != null && pointerYPosition != null && pointerEventDeltaY != null) {
-      if ((pointerYPosition < (top + _scrollAreaSize) || pointerEventDeltaY < 0) &&
+      if (pointerYPosition < (top + _scrollAreaSize) &&
           scrollController.position.pixels >
-              scrollController.position.minScrollExtent) {
+              scrollController.position.minScrollExtent + top.abs()) {
         final overDrag =
             max((top + _scrollAreaSize) - pointerYPosition, _overDragMax);
         newOffset = max(scrollController.position.minScrollExtent,
             scrollController.position.pixels - overDrag / _overDragCoefficient);
-      } else if ((pointerYPosition > (bottom - _scrollAreaSize) || pointerEventDeltaY > 0) &&
+      } else if (pointerYPosition > (bottom - _scrollAreaSize) &&
           scrollController.position.pixels <
-              scrollController.position.maxScrollExtent) {
+              (scrollController.position.maxScrollExtent - (scrollController.position.maxScrollExtent - bottom.abs()))) {
         final overDrag = max<double>(
             pointerYPosition - (bottom - _scrollAreaSize), _overDragMax);
         newOffset = min(scrollController.position.maxScrollExtent,
