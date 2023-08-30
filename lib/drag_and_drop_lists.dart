@@ -749,6 +749,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     double bottomDistance = bottomRightOffset.distance;
     print('topDistance $topDistance');
     print('bottomDistance $bottomDistance');
+    print('height $height');
     double? newOffset;
 
     var pointerYPosition = _pointerYPosition;
