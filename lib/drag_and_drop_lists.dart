@@ -367,6 +367,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
   bool _pointerDown = false;
   double? _pointerYPosition;
   double? _pointerXPosition;
+  double? _pointerEventDeltaY;
   bool _scrolling = false;
   PageStorageBucket _pageStorageBucket = PageStorageBucket();
 
@@ -675,6 +676,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
 
   _onPointerMove(PointerMoveEvent event) {
     if (_pointerDown) {
+      _pointerEventDeltaY = event.delta.dy;
       _pointerYPosition = event.position.dy;
       _pointerXPosition = event.position.dx;
 
@@ -684,12 +686,14 @@ class DragAndDropListsState extends State<DragAndDropLists> {
 
   _onPointerDown(PointerDownEvent event) {
     _pointerDown = true;
+    _pointerEventDeltaY = event.delta.dy;
     _pointerYPosition = event.position.dy;
     _pointerXPosition = event.position.dx;
   }
 
   _onPointerUp(PointerUpEvent event) {
     _pointerDown = false;
+    _pointerEventDeltaY = event.delta.dy;
   }
 
   final int _duration = 30; // in ms
@@ -744,16 +748,17 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     double? newOffset;
 
     var pointerYPosition = _pointerYPosition;
+    var pointerEventDeltaY = _pointerEventDeltaY;
     var scrollController = _scrollController;
-    if (scrollController != null && pointerYPosition != null) {
-      if (pointerYPosition < (top + _scrollAreaSize) &&
+    if (scrollController != null && pointerYPosition != null && pointerEventDeltaY != null) {
+      if ((pointerYPosition < (top + _scrollAreaSize) || pointerEventDeltaY < 0) &&
           scrollController.position.pixels >
               scrollController.position.minScrollExtent) {
         final overDrag =
             max((top + _scrollAreaSize) - pointerYPosition, _overDragMax);
         newOffset = max(scrollController.position.minScrollExtent,
             scrollController.position.pixels - overDrag / _overDragCoefficient);
-      } else if (pointerYPosition > (bottom - _scrollAreaSize) &&
+      } else if ((pointerYPosition > (bottom - _scrollAreaSize) || pointerEventDeltaY > 0) &&
           scrollController.position.pixels <
               scrollController.position.maxScrollExtent) {
         final overDrag = max<double>(
