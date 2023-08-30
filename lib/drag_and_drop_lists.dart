@@ -745,22 +745,26 @@ class DragAndDropListsState extends State<DragAndDropLists> {
   double? _scrollListVertical(Offset topLeftOffset, Offset bottomRightOffset, double height) {
     double top = topLeftOffset.dy;
     double bottom = bottomRightOffset.dy;
+    double topDistance = topLeftOffset.distance;
+    double bottomDistance = bottomRightOffset.distance;
+    print('topDistance $topDistance');
+    print('bottomDistance $bottomDistance');
     double? newOffset;
 
     var pointerYPosition = _pointerYPosition;
     var pointerEventDeltaY = _pointerEventDeltaY;
     var scrollController = _scrollController;
     if (scrollController != null && pointerYPosition != null && pointerEventDeltaY != null) {
-      if (pointerEventDeltaY < 0 &&
+      if (pointerYPosition < (top + _scrollAreaSize) &&
           scrollController.position.pixels >
-              scrollController.position.minScrollExtent + top) {
+              scrollController.position.minScrollExtent + topDistance) {
         final overDrag =
             max((top + _scrollAreaSize) - pointerYPosition, _overDragMax);
         newOffset = max(scrollController.position.minScrollExtent,
             scrollController.position.pixels - overDrag / _overDragCoefficient);
-      } else if (pointerEventDeltaY > 0 &&
+      } else if (pointerYPosition > (bottom - _scrollAreaSize) &&
           scrollController.position.pixels <
-              (scrollController.position.maxScrollExtent - (scrollController.position.maxScrollExtent - bottom))) {
+              (scrollController.position.maxScrollExtent - (scrollController.position.maxScrollExtent - bottomDistance))) {
         final overDrag = max<double>(
             pointerYPosition - (bottom - _scrollAreaSize), _overDragMax);
         newOffset = min(scrollController.position.maxScrollExtent,
