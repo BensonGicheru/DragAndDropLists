@@ -751,19 +751,19 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     var pointerEventDeltaY = _pointerEventDeltaY;
     var scrollController = _scrollController;
     if (scrollController != null && pointerYPosition != null && pointerEventDeltaY != null) {
-      if (pointerYPosition < (top + _scrollAreaSize) &&
+      if (pointerEventDeltaY < 0 &&
           scrollController.position.pixels >
               scrollController.position.minScrollExtent + top) {
         final overDrag =
             max((top + _scrollAreaSize) - pointerYPosition, _overDragMax);
-        newOffset = max((scrollController.position.minScrollExtent + top),
+        newOffset = max(scrollController.position.minScrollExtent,
             scrollController.position.pixels - overDrag / _overDragCoefficient);
-      } else if (pointerYPosition > (bottom - _scrollAreaSize) &&
+      } else if (pointerEventDeltaY > 0 &&
           scrollController.position.pixels <
-              (scrollController.position.maxScrollExtent - (scrollController.position.maxScrollExtent - (height + top)))) {
+              (scrollController.position.maxScrollExtent - (scrollController.position.maxScrollExtent - bottom))) {
         final overDrag = max<double>(
             pointerYPosition - (bottom - _scrollAreaSize), _overDragMax);
-        newOffset = min((scrollController.position.maxScrollExtent - (scrollController.position.maxScrollExtent - (height + top))),
+        newOffset = min(scrollController.position.maxScrollExtent,
             scrollController.position.pixels + overDrag / _overDragCoefficient);
       }
     }
