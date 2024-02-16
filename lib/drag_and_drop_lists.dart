@@ -726,9 +726,6 @@ class DragAndDropListsState extends State<DragAndDropLists> {
       var topLeftOffset = localToGlobal(rb, Offset.zero);
       var bottomRightOffset = localToGlobal(rb, size.bottomRight(Offset.zero));
 
-      print(topLeftOffset);
-      print(bottomRightOffset);
-
       if (widget.axis == Axis.vertical) {
         newOffset = _scrollListVertical(topLeftOffset, bottomRightOffset, size.height);
       } else {
@@ -760,7 +757,11 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     var pointerYPosition = _pointerYPosition;
     var pointerEventDeltaY = _pointerEventDeltaY;
     var scrollController = _scrollController;
+
     if (scrollController != null && pointerYPosition != null && pointerEventDeltaY != null) {
+      print('pixels=${scrollController.position.pixels}');
+      print('minScrollExtent=${scrollController.position.minScrollExtent}');
+      print('maxScrollExtent=${scrollController.position.maxScrollExtent}');
       if (pointerYPosition < (top + _scrollAreaSize) &&
           scrollController.position.pixels >
               scrollController.position.minScrollExtent) {
