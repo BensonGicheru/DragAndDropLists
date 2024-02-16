@@ -258,6 +258,8 @@ class DragAndDropLists extends StatefulWidget {
   /// Set to false if using in a widget only.
   final bool sliverList;
 
+  final double minimumSliverAppbarExtent;
+
   /// A scroll controller that can be used for the scrolling of the first level lists.
   /// This must be set if [sliverList] is set to true.
   final ScrollController? scrollController;
@@ -334,13 +336,14 @@ class DragAndDropLists extends StatefulWidget {
     this.horizontalAlignment = MainAxisAlignment.start,
     this.axis = Axis.vertical,
     this.sliverList = false,
+    this.minimumSliverAppbarExtent = 0.0,
     this.scrollController,
+    this.scrollControllerAttachedToDragDropList = true,
     this.disableScrolling = false,
     this.listDragHandle,
     this.itemDragHandle,
     this.constrainDraggingAxis = true,
     this.removeTopPadding = false,
-    this.scrollControllerAttachedToDragDropList = true,
     this.accountForScreenInsets = false,
     this.key,
   }) : super(key: key) {
@@ -769,14 +772,17 @@ class DragAndDropListsState extends State<DragAndDropLists> {
         minScrollExtent = top;
         maxScrollExtent = bottom;
       }
-      final topMinInsets = widget.accountForScreenInsets
-          ? max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top)
-          : 0.0;
-      final bottomMinInsets = widget.accountForScreenInsets
-          ? max(MediaQuery.of(context).padding.bottom, MediaQuery.of(context).viewInsets.bottom)
-          : 0.0;
-      top += topMinInsets;
-      bottom -= bottomMinInsets;
+
+      if(widget.accountForScreenInsets) {
+        final topMinInsets = max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top);
+        final bottomMinInsets = max(MediaQuery.of(context).padding.bottom, MediaQuery.of(context).viewInsets.bottom);
+        top+= topMinInsets;
+        bottom-= bottomMinInsets;
+      }
+
+      if(widget.sliverList) {
+        top+= widget.minimumSliverAppbarExtent;
+      }
 
       // up scroll
       if (pointerYPosition < (top + _scrollAreaSize) &&
