@@ -287,6 +287,7 @@ class DragAndDropLists extends StatefulWidget {
   final bool removeTopPadding;
 
   final GlobalKey? key;
+  final bool scrollControllerAttachedToDragDropList;
 
   DragAndDropLists({
     required this.children,
@@ -338,6 +339,7 @@ class DragAndDropLists extends StatefulWidget {
     this.itemDragHandle,
     this.constrainDraggingAxis = true,
     this.removeTopPadding = false,
+    this.scrollControllerAttachedToDragDropList = true,
     this.key,
   }) : super(key: key) {
     if (listGhost == null &&
@@ -759,11 +761,13 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     var scrollController = _scrollController;
 
     if (scrollController != null && pointerYPosition != null && pointerEventDeltaY != null) {
-      print('pixels=${scrollController.position.pixels}');
-      print('minScrollExtent=${scrollController.position.minScrollExtent}');
-      print('maxScrollExtent=${scrollController.position.maxScrollExtent}');
-      double minScrollExtent = top;
-      double maxScrollExtent = bottom;
+      double minScrollExtent = scrollController.position.minScrollExtent;
+      double maxScrollExtent = scrollController.position.maxScrollExtent;
+      if(!widget.scrollControllerAttachedToDragDropList) {
+        minScrollExtent = top;
+        maxScrollExtent = bottom;
+      }
+      // up scroll
       if (pointerYPosition < (top + _scrollAreaSize) &&
           scrollController.position.pixels >
               minScrollExtent) {
@@ -771,7 +775,9 @@ class DragAndDropListsState extends State<DragAndDropLists> {
             max((top + _scrollAreaSize) - pointerYPosition, _overDragMax);
         newOffset = max(minScrollExtent,
             scrollController.position.pixels - overDrag / _overDragCoefficient);
-      } else if (pointerYPosition > (bottom - _scrollAreaSize) &&
+      }
+      // down scroll
+      else if (pointerYPosition > (bottom - _scrollAreaSize) &&
           scrollController.position.pixels <
               maxScrollExtent) {
         final overDrag = max<double>(
