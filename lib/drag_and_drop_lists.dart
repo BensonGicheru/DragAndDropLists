@@ -286,6 +286,8 @@ class DragAndDropLists extends StatefulWidget {
   /// https://github.com/flutter/flutter/issues/14842#issuecomment-371344881
   final bool removeTopPadding;
 
+  final GlobalKey? key;
+
   DragAndDropLists({
     required this.children,
     required this.onItemReorder,
@@ -336,7 +338,7 @@ class DragAndDropLists extends StatefulWidget {
     this.itemDragHandle,
     this.constrainDraggingAxis = true,
     this.removeTopPadding = false,
-    Key? key,
+    this.key,
   }) : super(key: key) {
     if (listGhost == null &&
         children
@@ -710,7 +712,12 @@ class DragAndDropListsState extends State<DragAndDropLists> {
         _pointerXPosition != null) {
       double? newOffset;
 
-      var rb = context.findRenderObject()!;
+      dynamic rb;
+      if(widget.key != null) {
+        rb = widget.key!.currentContext!.findRenderObject();
+      } else {
+        rb = context.findRenderObject()!;
+      }
       late Size size;
       if (rb is RenderBox)
         size = rb.size;
