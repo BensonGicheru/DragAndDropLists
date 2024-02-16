@@ -769,13 +769,14 @@ class DragAndDropListsState extends State<DragAndDropLists> {
         minScrollExtent = top;
         maxScrollExtent = bottom;
       }
-
-      if(widget.accountForScreenInsets) {
-        final topMinInsets = max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top);
-        final bottomMinInsets = max(MediaQuery.of(context).padding.bottom, MediaQuery.of(context).viewInsets.bottom);
-        minScrollExtent+= topMinInsets;
-        maxScrollExtent-= bottomMinInsets;
-      }
+      final topMinInsets = widget.accountForScreenInsets
+          ? max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top)
+          : 0.0;
+      final bottomMinInsets = widget.accountForScreenInsets
+          ? max(MediaQuery.of(context).padding.bottom, MediaQuery.of(context).viewInsets.bottom)
+          : 0.0;
+      top += topMinInsets;
+      bottom -= bottomMinInsets;
 
       // up scroll
       if (pointerYPosition < (top + _scrollAreaSize) &&
