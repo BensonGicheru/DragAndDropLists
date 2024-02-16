@@ -723,8 +723,11 @@ class DragAndDropListsState extends State<DragAndDropLists> {
         size = rb.size;
       else if (rb is RenderSliver) size = rb.paintBounds.size;
 
-      var topLeftOffset = rb.localToGlobal(Offset.zero);
-      var bottomRightOffset = rb.localToGlobal(size.bottomRight(Offset.zero));
+      var topLeftOffset = localToGlobal(rb, Offset.zero);
+      var bottomRightOffset = localToGlobal(rb, size.bottomRight(Offset.zero));
+
+      print(topLeftOffset);
+      print(bottomRightOffset);
 
       if (widget.axis == Axis.vertical) {
         newOffset = _scrollListVertical(topLeftOffset, bottomRightOffset, size.height);
