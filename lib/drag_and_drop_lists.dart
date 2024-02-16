@@ -286,8 +286,8 @@ class DragAndDropLists extends StatefulWidget {
   /// https://github.com/flutter/flutter/issues/14842#issuecomment-371344881
   final bool removeTopPadding;
 
-  final GlobalKey? key;
   final bool scrollControllerAttachedToDragDropList;
+  final GlobalKey? key;
 
   DragAndDropLists({
     required this.children,
@@ -767,6 +767,10 @@ class DragAndDropListsState extends State<DragAndDropLists> {
         minScrollExtent = top;
         maxScrollExtent = bottom;
       }
+      final topMinInsets = max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top);
+      final bottomMinInsets = max(MediaQuery.of(context).padding.bottom, MediaQuery.of(context).viewInsets.bottom);
+      print('topMinInsets $topMinInsets');
+      print('bottomMinInsets $bottomMinInsets');
       // up scroll
       if (pointerYPosition < (top + _scrollAreaSize) &&
           scrollController.position.pixels >
