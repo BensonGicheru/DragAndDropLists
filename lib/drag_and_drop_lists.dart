@@ -287,6 +287,7 @@ class DragAndDropLists extends StatefulWidget {
   final bool removeTopPadding;
 
   final bool scrollControllerAttachedToDragDropList;
+  final bool accountForScreenInsets;
   final GlobalKey? key;
 
   DragAndDropLists({
@@ -340,6 +341,7 @@ class DragAndDropLists extends StatefulWidget {
     this.constrainDraggingAxis = true,
     this.removeTopPadding = false,
     this.scrollControllerAttachedToDragDropList = true,
+    this.accountForScreenInsets = false,
     this.key,
   }) : super(key: key) {
     if (listGhost == null &&
@@ -767,10 +769,14 @@ class DragAndDropListsState extends State<DragAndDropLists> {
         minScrollExtent = top;
         maxScrollExtent = bottom;
       }
-      final topMinInsets = max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top);
-      final bottomMinInsets = max(MediaQuery.of(context).padding.bottom, MediaQuery.of(context).viewInsets.bottom);
-      print('topMinInsets $topMinInsets');
-      print('bottomMinInsets $bottomMinInsets');
+
+      if(widget.accountForScreenInsets) {
+        final topMinInsets = max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top);
+        final bottomMinInsets = max(MediaQuery.of(context).padding.bottom, MediaQuery.of(context).viewInsets.bottom);
+        minScrollExtent+= topMinInsets;
+        maxScrollExtent-= bottomMinInsets;
+      }
+
       // up scroll
       if (pointerYPosition < (top + _scrollAreaSize) &&
           scrollController.position.pixels >
