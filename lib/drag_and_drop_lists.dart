@@ -289,6 +289,7 @@ class DragAndDropLists extends StatefulWidget {
   final bool removeTopPadding;
 
   final bool scrollControllerAttachedToDragDropList;
+  final bool listExtendsToEndOfScrollView;
   final bool accountForScreenInsets;
   final GlobalKey? key;
 
@@ -339,6 +340,7 @@ class DragAndDropLists extends StatefulWidget {
     this.minimumSliverAppbarExtent = 0.0,
     this.scrollController,
     this.scrollControllerAttachedToDragDropList = true,
+    this.listExtendsToEndOfScrollView = true,
     this.disableScrolling = false,
     this.listDragHandle,
     this.itemDragHandle,
@@ -770,7 +772,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
       double maxScrollExtent = scrollController.position.maxScrollExtent;
       if(!widget.scrollControllerAttachedToDragDropList) {
         minScrollExtent = top;
-        maxScrollExtent = bottom;
+        if(!widget.listExtendsToEndOfScrollView) maxScrollExtent = bottom;
       }
 
       if(widget.accountForScreenInsets) {
