@@ -288,7 +288,7 @@ class DragAndDropLists extends StatefulWidget {
   /// https://github.com/flutter/flutter/issues/14842#issuecomment-371344881
   final bool removeTopPadding;
 
-  final bool scrollControllerAttachedToDragDropList;
+  final bool listExtendsToStartOfScrollView;
   final bool listExtendsToEndOfScrollView;
   final bool accountForScreenInsets;
   final GlobalKey? key;
@@ -339,7 +339,7 @@ class DragAndDropLists extends StatefulWidget {
     this.sliverList = false,
     this.minimumSliverAppbarExtent = 0.0,
     this.scrollController,
-    this.scrollControllerAttachedToDragDropList = true,
+    this.listExtendsToStartOfScrollView = true,
     this.listExtendsToEndOfScrollView = true,
     this.disableScrolling = false,
     this.listDragHandle,
@@ -770,10 +770,9 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     if (scrollController != null && pointerYPosition != null && pointerEventDeltaY != null) {
       double minScrollExtent = scrollController.position.minScrollExtent;
       double maxScrollExtent = scrollController.position.maxScrollExtent;
-      if(!widget.scrollControllerAttachedToDragDropList) {
-        minScrollExtent = top;
-        if(!widget.listExtendsToEndOfScrollView) maxScrollExtent = bottom;
-      }
+
+      if(!widget.listExtendsToStartOfScrollView) minScrollExtent = top;
+      if(!widget.listExtendsToEndOfScrollView) maxScrollExtent = bottom;
 
       if(widget.accountForScreenInsets) {
         final topMinInsets = max(MediaQuery.of(context).padding.top, MediaQuery.of(context).viewInsets.top);
